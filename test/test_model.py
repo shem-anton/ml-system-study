@@ -1,6 +1,6 @@
 from unittest import TestCase
 import numpy as np
-from model.model import MeanModel
+from model import MeanModel
 
 
 class UnitTestMeanModel(TestCase):
