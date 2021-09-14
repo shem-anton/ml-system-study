@@ -1,8 +1,12 @@
 version: "3"
 
 services:
+  redis:
+    image: redis
   app:
     image: shemyanton/ml-system-study
+    depends_on:
+     - redis
     ports:
       - "5000"
   nginx:
