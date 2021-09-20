@@ -5,4 +5,4 @@ Run *n* intances of the app with load balancing by
 
 `docker-compose up --scale app=n`
 
-Connect to load balancer on localhost:4000, powered by nginx
+Connect to load balancer on localhost:80, powered by nginx
