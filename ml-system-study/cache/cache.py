@@ -4,7 +4,7 @@ import redis
 class RedisCache():
 
     def __init__(self):
-        self.redis = redis.Redis()
+        self.redis = redis.Redis(host='redis', port=6379)
         
     def contains(self, key):
         return self.redis.exists(key) == 1
