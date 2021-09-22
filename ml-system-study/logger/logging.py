@@ -22,6 +22,6 @@ class LogService():
             time_bytes = response[0][1][i][0]
             # Discard the trailing -0 and the last three digits to convert to seconds from miliseconds
             time = time_bytes.decode('utf-8')[0:-5]
-            timestamp = datetime.utcfromtimestamp(time).strftime('%Y-%m-%d %H:%M:%S')
+            timestamp = datetime.utcfromtimestamp(int(time)).strftime('%Y-%m-%d %H:%M:%S')
             result.append({"timestamp": timestamp, "message": message})
         return result
