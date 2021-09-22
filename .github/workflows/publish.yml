@@ -36,7 +36,7 @@ jobs:
           export_default_credentials: true
      
       - name: Start VM instance
-        run: gcloud compute instances start instance-1
+        run: gcloud compute instances start --zone europe-west3-c instance-1
         
       - name: Stop running app, pull new image and run app
         run: gcloud compute ssh --zone europe-west3-c instance-1 --command 'cd /home/shemyanton/ml-system-study/ && docker-compose down && docker pull shemyanton/ml-system-study:latest && docker-compose up --scale app=3'
