@@ -15,7 +15,7 @@ cache = RedisCache()
 id = str(uuid.uuid4())
 logger.log("Assigned id {} to server".format(id))
 
-@app.route("/<ticker_id>")
+@app.route("/predict/<ticker_id>")
 def serve_prediction(ticker_id):
     logger.log("API is queried for prediction on {}".format(ticker_id))
     if cache.contains(ticker_id):
@@ -40,6 +40,10 @@ def serve_prediction(ticker_id):
         else:
             logger.log("Failed to predict {}".format(ticker_id))
             return "Ticker ID {} not available".format(ticker_id), 400
+
+@app.route("/log")
+def show_log(count: int = 50):
+    return logger.read_log(count)
 
 def _fetch_historical_data(ticker_id):
     logger.log("Requested historical data for {}".format(ticker_id))
