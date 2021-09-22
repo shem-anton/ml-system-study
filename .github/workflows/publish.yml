@@ -39,13 +39,4 @@ jobs:
         run: gcloud compute instances start --zone europe-west3-c instance-1
         
       - name: Stop running app, pull new image and run app
-        run: |
-          gcloud compute ssh --zone europe-west3-c instance-1 --command \ 
-          'if [ -f ~/.bashrc ]; then
-          . ~/.bashrc
-          fi
-          cd /home/shemyanton/ml-system-study/
-          docker-compose down
-          docker pull shemyanton/ml-system-study:latest
-          docker-compose up --scale app=3'
-     
+        run: gcloud compute ssh --zone europe-west3-c instance-1 --command 'source ~/.bashrc && cd /home/shemyanton/ml-system-study/ && docker-compose down && docker pull shemyanton/ml-system-study:latest && docker-compose up --scale app=3'
