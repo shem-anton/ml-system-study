@@ -5,7 +5,7 @@ from model import MeanModel
 
 class UnitTestMeanModel(TestCase):
 
-    # Test the correct output
+    # Test the correct model output
     def test_model_predictions(self):
         model = MeanModel()
         self.assertEqual(model.predict(np.array([1, 2, 3, 4, 5])), 3.0)
