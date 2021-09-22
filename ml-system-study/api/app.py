@@ -1,10 +1,14 @@
 from flask import Flask
+from flask import jsonify
+from flask import request
+
 import numpy as np
 import yfinance as yf
+import uuid
+
 from model import MeanModel
 from cache import RedisCache
 from logger import LogService
-import uuid
 
 
 logger = LogService("API")
@@ -35,15 +39,20 @@ def serve_prediction(ticker_id):
                 "server_id": id
             }
             cache.set(ticker_id, prediction)
-            logger.log("Generated new prediction")
             return response
         else:
             logger.log("Failed to predict {}".format(ticker_id))
             return "Ticker ID {} not available".format(ticker_id), 400
 
-@app.route("/log")
-def show_log(count: int = 50):
-    return logger.read_log(count)
+@app.route("/log/")
+def show_log():
+    try:
+        count = int(request.args.get('count'))
+    except:
+        count = 50
+    log = logger.read_log()
+    result = list(reversed(log[len(log) - count: len(log)]))
+    return jsonify(result)
 
 def _fetch_historical_data(ticker_id):
     logger.log("Requested historical data for {}".format(ticker_id))
