@@ -10,7 +10,7 @@ import uuid
 logger = LogService("API")
 app = Flask(__name__)
 logger.log("Created Flask app")
-model = MeanModel()
+model = MeanModel(LogService("Model"))
 cache = RedisCache()
 id = str(uuid.uuid4())
 logger.log("Assigned id {} to server".format(id))
