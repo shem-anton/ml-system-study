@@ -36,7 +36,7 @@ jobs:
           export_default_credentials: true
      
       - name: Start VM instance
-        run: gcloud compute instances start --zone europe-west3-c instance-1
+        run: gcloud compute instances start --zone europe-west3-c instance-2
       
       - name: Stop running app
         run: gcloud compute ssh --zone europe-west3-c instance-2 --command 'cd ~/ml-system-study/ && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0 down'
