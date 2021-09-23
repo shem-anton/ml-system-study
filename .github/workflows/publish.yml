@@ -37,6 +37,13 @@ jobs:
      
       - name: Start VM instance
         run: gcloud compute instances start --zone europe-west3-c instance-1
+      
+      - name: Stop running app
+        run: gcloud compute ssh --zone europe-west3-c instance-2 --command 'cd ~/ml-system-study/ && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0 down'
+      
+      - name: Pull code and image
+        run: gcloud compute ssh --zone europe-west3-c instance-2--command 'cd ~/ml-system-study/ && git pull && docker pull shemyanton/ml-system-study:latest'
         
-      - name: Stop running app, pull new image and run app
-        run: gcloud compute ssh --zone europe-west3-c instance-1 --command 'cd /home/shemyanton/ml-system-study/ && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0 down && docker pull shemyanton/ml-system-study:latest && docker run -d --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0 up --scale app=3'
+      - name: Run app
+        run: gcloud compute ssh --zone europe-west3-c instance-2 --command 'docker run -d --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0 up --scale app=3'
+      
