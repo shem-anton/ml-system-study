@@ -20,6 +20,14 @@ class UnitTestMeanModel(TestCase):
         self.assertRaises(ValueError, model.predict_next, np.array([[1, 2], [3, 4]]))
         self.assertEqual(model.predict_next(np.array([10] * 10000)), 10)
 
+    # Verify model evaluation
+    def test_model_evaaluate(self):
+        model = MeanModel()
+        data = [[np.array([1, 2, 3, 4, 5]), 6],
+                [np.array([2, 2, 3, 2, 1]), 6],
+                [np.array([1, 1, 1]), 1]]
+        self.assertAlmostEqual(model.evaluate(data), 5)
+
 class UnitTestAutoregressionModel(TestCase):
 
     # Test that the model can not be called before training
@@ -54,3 +62,11 @@ class UnitTestAutoregressionModel(TestCase):
         self.assertAlmostEqual(model.predict_next(np.array([1,2,3,4])), 5)
         model.train(-np.arange(20))
         self.assertAlmostEqual(model.predict_next(np.array([1,2,3,4])), 3.66666666)
+
+    def test_model_evaluate(self):
+        model = AutoregressionModel(3)
+        model.train(np.arange(20))
+        data = [[np.array([1, 2, 3, 4, 5]), 3],
+                [np.array([2, 2, 3, 2, 1]), 5.333333333],
+                [np.array([7, 7, 8, 7, 7]), 7.333333333]]
+        self.assertAlmostEqual(model.evaluate(data), 5)
