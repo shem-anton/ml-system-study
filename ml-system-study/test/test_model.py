@@ -89,23 +89,23 @@ class UnitTestMovingAverageModel(TestCase):
     def test_model_output(self):
         model = MovingAverageModel(2)
         model.train(np.arange(20))
-        self.assertAlmostEqual(model.predict_next(np.array([20, 22, 24])), 17.438343935642447)
-        self.assertAlmostEqual(model.predict_next(np.array([15, 15, 15, 15])), 9.238927036064835)
-        self.assertAlmostEqual(model.predict_next(np.array([5, 6, 5, 6, 5])), 1.3093886887291837)
+        self.assertAlmostEqual(model.predict_next(np.array([20, 22, 24])), 17.4383670347459, 4)
+        self.assertAlmostEqual(model.predict_next(np.array([15, 15, 15, 15])), 9.238927036064835, 4)
+        self.assertAlmostEqual(model.predict_next(np.array([5, 6, 5, 6, 5])), 1.3093886887291837, 4)
 
     # Test that the model can be retrained
     def test_model_retrain(self):
         model = MovingAverageModel(2)
         model.train(np.arange(20))
-        self.assertAlmostEqual(model.predict_next(np.array([20, 22, 24])), 17.438343935642447)
+        self.assertAlmostEqual(model.predict_next(np.array([20, 22, 24])), 17.4383670347459, 4)
         model.train(np.array([15] * 20))
-        self.assertAlmostEqual(model.predict_next(np.array([20, 22, 24])), 17.49402644640901)
+        self.assertAlmostEqual(model.predict_next(np.array([20, 22, 24])), 17.49402644640901, 4)
 
     # Test model evaluation
     def test_model_evaluate(self):
         model = MovingAverageModel(2)
         model.train(np.arange(20))
-        data = [[np.array([20, 22, 24]), 14.438343935642447],
+        data = [[np.array([20, 22, 24]), 14.4383670347459],
                 [np.array([15, 15, 15, 15]), 13.238927036064835],
                 [np.array([5, 6, 5, 6, 5]), 1.3093886887291837]]
-        self.assertAlmostEqual(model.evaluate(data), 5)
+        self.assertAlmostEqual(model.evaluate(data), 5, 4)
