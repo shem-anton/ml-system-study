@@ -15,6 +15,7 @@ logger = LogService("API")
 app = Flask(__name__)
 logger.log("Created Flask app")
 model = MeanModel(LogService("Model"))
+logger.log("Initialized {}".format(model.name()))
 cache = RedisCache()
 id = str(uuid.uuid4())
 logger.log("Assigned id {} to server".format(id))
@@ -34,6 +35,7 @@ def serve_prediction(ticker_id):
         data = _fetch_historical_data(ticker_id)
         if data.shape[0] > 0:
             prediction = model.predict(data)
+            logger.log("Generated prediction with {}".format(model.name()))
             response = {
                 "prediction": prediction,
                 "server_id": id
