@@ -39,7 +39,7 @@ jobs:
         run: gcloud compute instances start --zone europe-west3-c instance-2
       
       - name: Pull code and docker image
-        run: gcloud compute ssh --zone europe-west3-c instance-2 --command 'git clone https://github.com/shem-anton/ml-system-study && cd ~/ml-system-study/ && git pull && docker pull shemyanton/ml-system-study:latest'
+        run: gcloud compute ssh --zone europe-west3-c instance-2 --command 'rm -rf ~/ml-system-study/ && git clone https://github.com/shem-anton/ml-system-study && cd ~/ml-system-study/ && git pull && docker pull shemyanton/ml-system-study:latest'
         
       - name: Stop running app
         run: gcloud compute ssh --zone europe-west3-c instance-2 --command 'cd ~/ml-system-study/ && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.24.0 down'      
