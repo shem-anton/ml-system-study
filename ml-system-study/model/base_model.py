@@ -12,6 +12,10 @@ class BaseModel(ABC):
     def train(self, data):
         pass
 
+    @abstractmethod
+    def name(self):
+        pass
+
     # Calculate MSE of the model on a list of (previous observations, next observation) pairs
     def evaluate(self, data):
         true, predicted = [], []

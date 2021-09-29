@@ -2,6 +2,7 @@ from unittest import TestCase
 import numpy as np
 from model import MeanModel
 from model import AutoregressionModel
+from model import MovingAverageModel
 
 
 class UnitTestMeanModel(TestCase):
@@ -69,4 +70,42 @@ class UnitTestAutoregressionModel(TestCase):
         data = [[np.array([1, 2, 3, 4, 5]), 3],
                 [np.array([2, 2, 3, 2, 1]), 5.333333333],
                 [np.array([7, 7, 8, 7, 7]), 7.333333333]]
+        self.assertAlmostEqual(model.evaluate(data), 5)
+
+class UnitTestMovingAverageModel(TestCase):
+
+    # Test that the model can not be called before training
+    def test_model_not_trained(self):
+        model = MovingAverageModel(3)
+        self.assertRaises(ValueError, model.predict_next, np.array([1,2,3]))
+
+    # Test that the model does not return predictions if input length is smaller than model lag
+    def test_short_input(self):
+        model = MovingAverageModel(30)
+        model.train(np.arange(1000))
+        self.assertRaises(ValueError, model.predict_next, np.array([1,2,3]))
+
+    # Test that the model performs correctly
+    def test_model_output(self):
+        model = MovingAverageModel(2)
+        model.train(np.arange(20))
+        self.assertAlmostEqual(model.predict_next(np.array([20, 22, 24])), 17.438343935642447)
+        self.assertAlmostEqual(model.predict_next(np.array([15, 15, 15, 15])), 9.238927036064835)
+        self.assertAlmostEqual(model.predict_next(np.array([5, 6, 5, 6, 5])), 1.3093886887291837)
+
+    # Test that the model can be retrained
+    def test_model_retrain(self):
+        model = MovingAverageModel(2)
+        model.train(np.arange(20))
+        self.assertAlmostEqual(model.predict_next(np.array([20, 22, 24])), 17.438343935642447)
+        model.train(np.array([15] * 20))
+        self.assertAlmostEqual(model.predict_next(np.array([20, 22, 24])), 17.49402644640901)
+
+    # Test model evaluation
+    def test_model_evaluate(self):
+        model = MovingAverageModel(2)
+        model.train(np.arange(20))
+        data = [[np.array([20, 22, 24]), 14.438343935642447],
+                [np.array([15, 15, 15, 15]), 13.238927036064835],
+                [np.array([5, 6, 5, 6, 5]), 1.3093886887291837]]
         self.assertAlmostEqual(model.evaluate(data), 5)
