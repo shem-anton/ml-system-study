@@ -21,8 +21,8 @@ jobs:
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
+        working-directory: ./ml-system-study
         with:
-          file: ml-system-study/Dockerfile
           push: true
           tags: shemyanton/ml-system-study:latest
   gcloud:
