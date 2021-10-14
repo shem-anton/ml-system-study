@@ -1,9 +1,11 @@
 from unittest import TestCase
 import numpy as np
-from model import MeanModel
-from model import AutoregressionModel
-from model import MovingAverageModel
-
+# Use importlib to import module with hyphen in name
+import importlib
+ml_system_study = importlib.import_module("ml-system-study.model")
+MeanModel = getattr(ml_system_study, 'MeanModel')
+AutoregressionModel = getattr(ml_system_study, 'AutoregressionModel')
+MovingAverageModel = getattr(ml_system_study, 'MovingAverageModel')
 
 class UnitTestMeanModel(TestCase):
 
