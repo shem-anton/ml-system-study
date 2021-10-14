@@ -7,8 +7,8 @@ LogService = getattr(ml_system_study, 'LogService')
 
 class RedisCache():
 
-    def __init__(self):
-        self.redis = redis.Redis(host='redis', port=6379)
+    def __init__(self, host, port=6379):
+        self.redis = redis.Redis(host=host, port=port)
         self.logger = LogService("Cache")
         self.logger.log("Connected to Redis server")
         

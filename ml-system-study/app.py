@@ -1,22 +1,26 @@
 from flask import Flask
 from flask import jsonify
 from flask import request
+from flask import current_app as app
 
 import numpy as np
 import yfinance as yf
 import uuid
+import configparser
 
-from model import MeanModel
+from model import ModelLoader
 from cache import RedisCache
 from logger import LogService
 
 
+config = configparser.ConfigParser()
+config.read('config.ini')
 logger = LogService("API")
 app = Flask(__name__)
 logger.log("Created Flask app")
-model = MeanModel()
+model = ModelLoader.create(config["REDIS"]["DEFAULT"])
 logger.log("Initialized {}".format(model.name()))
-cache = RedisCache()
+cache = RedisCache(config["REDIS"]["HOST"], config["REDIS"]["PORT"])
 id = str(uuid.uuid4())
 logger.log("Assigned id {} to server".format(id))
 
