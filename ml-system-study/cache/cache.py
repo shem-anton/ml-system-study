@@ -1,5 +1,8 @@
 import redis
-from logger import LogService
+# Use importlib to import module with hyphen in name
+import importlib
+ml_system_study = importlib.import_module("ml-system-study")
+LogService = getattr(ml_system_study, 'LogService')
 
 
 class RedisCache():
