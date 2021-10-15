@@ -10,6 +10,10 @@ to coordinate Redis, nginx and several app containers.
 
 Several models imlpementing the same abstract class are available for user.
 
+Basic CI / CD workflow is implemented with GitHub actions. build_test.yml runs unit tests,
+publish.yml builds Docker image out of application code and pushes it to the registry.
+After that the application is automatically deployed on Google Cloud Platform. 
+
 Run the app with *n* servers in rotation by
 `docker-compose up --scale app=n`
 
