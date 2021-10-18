@@ -4,8 +4,8 @@ from datetime import datetime
 
 class LogService():
 
-    def __init__(self, name):
-        self.redis = redis.Redis(host='redis', port=6379)
+    def __init__(self, name, host, port=6379):
+        self.redis = redis.Redis(host=host, port=port)
         self.stream = "log"
         self.name = name
 

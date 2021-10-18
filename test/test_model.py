@@ -1,11 +1,10 @@
 from unittest import TestCase
 import numpy as np
-# Use importlib to import module with hyphen in name
-import importlib
-ml_system_study = importlib.import_module("ml-system-study.model")
-MeanModel = getattr(ml_system_study, 'MeanModel')
-AutoregressionModel = getattr(ml_system_study, 'AutoregressionModel')
-MovingAverageModel = getattr(ml_system_study, 'MovingAverageModel')
+from ml_system_study.model import MeanModel
+from ml_system_study.model import AutoregressionModel
+from ml_system_study.model import MovingAverageModel
+from ml_system_study.model import ModelLoader
+
 
 class UnitTestMeanModel(TestCase):
 
@@ -113,3 +112,23 @@ class UnitTestMovingAverageModel(TestCase):
         evaluation = model.evaluate(data)
         self.assertGreater(evaluation, 0)
         self.assertLess(evaluation, 20)
+
+class UnitTestModelFactory(TestCase):
+
+    # Test that model factory correctly creates model objects
+    def test_loading(self):
+        model = ModelLoader.create("mean")
+        self.assertEqual(model.name(), "mean model")
+        model = ModelLoader.create("autoregression")
+        self.assertEqual(model.name(), "autoregression model")
+        model = ModelLoader.create("moving average")
+        self.assertEqual(model.name(), "moving average model")
+
+    # Test that model factory correctly handles arguments
+    def test_arguments(self):
+        model = ModelLoader.create("autoregression")
+        self.assertEqual(model.lag, 3)
+        model = ModelLoader.create("autoregression", 4)
+        self.assertEqual(model.lag, 4)
+        model = ModelLoader.create("autoregression", 4, 5, 6)
+        self.assertEqual(model.lag, 4)

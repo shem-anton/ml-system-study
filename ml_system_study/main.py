@@ -1,27 +1,34 @@
-from flask import Flask
-from flask import jsonify
-from flask import request
+from fastapi import FastAPI
 
 import numpy as np
 import yfinance as yf
 import uuid
+import configparser
 
-from model import MeanModel
+from model import ModelLoader
 from cache import RedisCache
 from logger import LogService
 
 
-logger = LogService("API")
-app = Flask(__name__)
+config = configparser.ConfigParser()
+config.read('config.ini')
+logger = LogService("API", 
+                    config["REDIS"]["HOST"], 
+                    config["REDIS"]["PORT"])
+app = FastAPI()
 logger.log("Created Flask app")
-model = MeanModel()
+model = ModelLoader.create(config["MODEL"]["DEFAULT"])
 logger.log("Initialized {}".format(model.name()))
-cache = RedisCache()
+cache = RedisCache(LogService("Cache", 
+                   config["REDIS"]["HOST"], 
+                   config["REDIS"]["PORT"]),
+                   config["REDIS"]["HOST"], 
+                   config["REDIS"]["PORT"])
 id = str(uuid.uuid4())
 logger.log("Assigned id {} to server".format(id))
 
-@app.route("/predict/<ticker_id>")
-def serve_prediction(ticker_id):
+@app.get("/predict/{ticker_id}")
+async def serve_prediction(ticker_id):
     logger.log("API is queried for prediction on {}".format(ticker_id))
     if cache.contains(ticker_id):
         prediction = cache.get(ticker_id)
@@ -46,15 +53,11 @@ def serve_prediction(ticker_id):
             logger.log("Failed to predict {}".format(ticker_id))
             return "Ticker ID {} not available".format(ticker_id), 400
 
-@app.route("/log/")
-def show_log():
-    try:
-        count = int(request.args.get('count'))
-    except:
-        count = 50
+@app.get("/log/")
+async def show_log(count: int = 50):
     log = logger.read_log()
     result = list(reversed(log[len(log) - count: len(log)]))
-    return jsonify(result)
+    return result
 
 def _fetch_historical_data(ticker_id):
     logger.log("Requested historical data for {}".format(ticker_id))

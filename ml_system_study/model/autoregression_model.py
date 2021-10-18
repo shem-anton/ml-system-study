@@ -21,6 +21,5 @@ class AutoregressionModel(BaseModel):
         return sum(self.model.params *
                    np.concatenate((np.array([1]), x[:-(1 + self.lag):-1])))
 
-
     def train(self, data):
         self.model = AutoReg(data, lags=self.lag).fit()

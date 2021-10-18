@@ -1,5 +1,6 @@
 yfinance
-flask
+fastapi
+uvicorn
 numpy
 redis
 statsmodels

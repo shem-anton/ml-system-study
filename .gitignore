@@ -131,3 +131,6 @@ dmypy.json
 # IDEA ide
 *.iml
 .idea/
+
+# Actual config file
+ml_system_study/config.ini
