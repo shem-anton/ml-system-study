@@ -11,7 +11,11 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
-
+        
+      - name: Load production config file
+        run: |
+          cp config/config.prod.ini ml_system_study/config.ini
+        
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
