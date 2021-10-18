@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          context: ./ml-system-study/
+          context: ./ml_system_study/
           tags: shemyanton/ml-system-study:latest
   gcloud:
     needs: docker
