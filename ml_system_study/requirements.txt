@@ -4,3 +4,4 @@ uvicorn
 numpy
 redis
 statsmodels
+pydantic

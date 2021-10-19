@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 import numpy as np
 import yfinance as yf
@@ -8,6 +8,7 @@ import configparser
 from model import ModelLoader
 from cache import RedisCache
 from logger import LogService
+from schemas import Model
 
 
 config = configparser.ConfigParser()
@@ -51,13 +52,22 @@ async def serve_prediction(ticker_id):
             return response
         else:
             logger.log("Failed to predict {}".format(ticker_id))
-            return "Ticker ID {} not available".format(ticker_id), 400
+            raise HTTPException(status_code=400, detail="Ticker ID {} not available".format(ticker_id))
 
 @app.get("/log/")
 async def show_log(count: int = 50):
     log = logger.read_log()
     result = list(reversed(log[len(log) - count: len(log)]))
     return result
+
+@app.post("/model/")
+async def update_model(model: Model):
+    try:
+        logger.log("Requested switching to {}".format(model.name()))
+        model = ModelLoader.create(model.name, model.parameters)
+    except ValueError:
+        logger.log("Unable to create {}".format(model.name()))
+        raise HTTPException(status_code=400, detail="Wrong model name {}".format(model.name))
 
 def _fetch_historical_data(ticker_id):
     logger.log("Requested historical data for {}".format(ticker_id))
