@@ -18,8 +18,8 @@ logger = LogService("API",
                     config["REDIS"]["PORT"])
 app = FastAPI()
 logger.log("Created Flask app")
-model = ModelLoader.create(config["MODEL"]["DEFAULT"])
-logger.log("Initialized {}".format(model.name()))
+active_model = ModelLoader.create(config["MODEL"]["DEFAULT"])
+logger.log("Initialized {}".format(active_model.name()))
 cache = RedisCache(LogService("Cache", 
                    config["REDIS"]["HOST"], 
                    config["REDIS"]["PORT"]),
@@ -42,8 +42,8 @@ async def serve_prediction(ticker_id):
     else:        
         data = _fetch_historical_data(ticker_id)
         if data.shape[0] > 0:
-            prediction = model.predict_next(data)
-            logger.log("Generated prediction with {}".format(model.name()))
+            prediction = active_model.predict_next(data)
+            logger.log("Generated prediction with {}".format(active_model.name()))
             response = {
                 "prediction": prediction,
                 "server_id": id
@@ -63,10 +63,10 @@ async def show_log(count: int = 50):
 @app.post("/model/")
 async def update_model(model: Model):
     try:
-        logger.log("Requested switching to {}".format(model.name()))
-        model = ModelLoader.create(model.name, model.parameters)
+        logger.log("Requested switching to {}".format(model.name))
+        active_model = ModelLoader.create(model.name, model.parameters)
     except ValueError:
-        logger.log("Unable to create {}".format(model.name()))
+        logger.log("Unable to create {}".format(model.name))
         raise HTTPException(status_code=400, detail="Wrong model name {}".format(model.name))
 
 def _fetch_historical_data(ticker_id):
