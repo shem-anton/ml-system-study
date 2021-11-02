@@ -132,3 +132,11 @@ class UnitTestModelFactory(TestCase):
         self.assertEqual(model.lag, 4)
         model = ModelLoader.create("autoregression", 4, 5, 6)
         self.assertEqual(model.lag, 4)
+
+    # Test that model factory trains autoregression and moving average models
+    def test_factory_training(self):
+        input = np.array([1, 2, 3, 4, 5])
+        model = ModelLoader.create("autoregression")
+        self.assertIsInstance(model.predict_next(input), float)
+        model = ModelLoader.create("moving average")
+        self.assertIsInstance(model.predict_next(input), float)

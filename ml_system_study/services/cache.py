@@ -1,5 +1,5 @@
 import redis
-from logger import LogService
+from services.logging import LogService
 
 
 class RedisCache():
