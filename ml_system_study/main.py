@@ -1,8 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from api.api import api_router
 
-import numpy as np
-import yfinance as yf
 import uuid
 import configparser
 
@@ -18,9 +16,7 @@ logger = LogService("API",
                     config["REDIS"]["HOST"], 
                     config["REDIS"]["PORT"])
 app = FastAPI()
-logger.log("Created Flask app")
-active_model = ModelLoader.create(config["MODEL"]["DEFAULT"])
-logger.log("Initialized {}".format(active_model.name()))
+logger.log("Created FastAPI app")
 cache = RedisCache(LogService("Cache", 
                    config["REDIS"]["HOST"], 
                    config["REDIS"]["PORT"]),
@@ -28,6 +24,5 @@ cache = RedisCache(LogService("Cache",
                    config["REDIS"]["PORT"])
 id = str(uuid.uuid4())
 logger.log("Assigned id {} to server".format(id))
-
 
 app.include_router(api_router)
