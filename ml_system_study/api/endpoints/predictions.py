@@ -20,7 +20,7 @@ logger.log("Assigned id {} to server".format(id))
 async def serve_prediction(ticker_id: str, model = "mean"):
     logger.log("API is queried for prediction on {}".format(ticker_id))
     print("before")
-    sleep(3600)
+    sleep(10)
     print("after")
     prediction = prediction_service.predict(ticker_id, model)
     if prediction is None:
