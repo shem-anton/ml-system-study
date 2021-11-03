@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 
 import configparser
 import uuid
-from time import sleep
+from asyncio import sleep
 from services.logging import LogService
 from services.prediction import PredictionService
 
@@ -20,7 +20,7 @@ logger.log("Assigned id {} to server".format(id))
 async def serve_prediction(ticker_id: str, model = "mean"):
     logger.log("API is queried for prediction on {}".format(ticker_id))
     print("before")
-    sleep(10)
+    sleep(1)
     print("after")
     prediction = prediction_service.predict(ticker_id, model)
     if prediction is None:
