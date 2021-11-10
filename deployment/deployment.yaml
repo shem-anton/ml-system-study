@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: anton
+
+---
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: anton-ingress
+  namespace: anton
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/anton`)
+      kind: Rule
+      services:
+        - name: anton
+          port: 9090
+      middlewares:
+        - name: anton-stripprefix
+
+---
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: anton-stripprefix
+  namespace: anton
+spec:
+  stripPrefix:
+    prefixes:
+      - /anton
+
+--- 
+
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: anton
+  name: anton
+  namespace: anton
+spec:
+  ports:
+    - port: 9090
+      targetPort: 9090
+  selector:
+    k8s-app: anton
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: anton
+  labels:
+    k8s-app: anton
+spec:
+  selector:
+    matchLabels:
+      k8s-app: anton
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        k8s-app: anton
+    spec:
+      containers:
+      - name: anton
+        image: YOUR CONTAINER IMAGE
+        ports:
+        - containerPort: 9090
